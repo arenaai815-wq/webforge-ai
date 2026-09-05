@@ -3,6 +3,7 @@ import { Navbar } from "@/components/Navbar"
 import { Hero } from "@/components/Hero"
 import { FableManifesto } from "@/components/FableManifesto"
 import { ForgeFeatures } from "@/components/ForgeFeatures"
+import { TemplateGallery } from "@/components/TemplateGallery"
 import { motion } from "framer-motion"
 import { ArrowUpRight, Github, Heart } from "lucide-react"
 import Link from "next/link"
@@ -14,6 +15,7 @@ export default function Home() {
       <Hero />
       <FableManifesto />
       <ForgeFeatures />
+      <TemplateGallery />
 
       {/* CTA - Fable closing */}
       <section className="relative overflow-hidden border-t border-[#E8E6E1] bg-[#FAF9F5]">

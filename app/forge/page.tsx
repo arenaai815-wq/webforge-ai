@@ -3,6 +3,8 @@ import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Navbar } from "@/components/Navbar"
 import { Button } from "@/components/ui/button"
+import { createForgeMeta, slugify } from "@/lib/forge"
+import { saveToVault } from "@/lib/storage"
 import {
   ArrowLeft,
   Sparkles,
@@ -22,6 +24,7 @@ import {
   ExternalLink,
 } from "lucide-react"
 import Link from "next/link"
+import { BusinessDropZone } from "@/components/BusinessDropZone"
 
 type BusinessInfo = {
   name: string
@@ -72,13 +75,14 @@ export default function ForgePage() {
   const startForge = () => {
     setStep("forging")
     setForgeLogs([])
+    const slug = slugify(business.name || "new-site")
     const logs = [
       `> Parsing narrative for "${business.name || "your business"}"...`,
       `> Extracting motifs: ${business.vibe}, ${business.audience?.split(",")[0] || "human"}-centric`,
       `> Crafting palette from vibe "${business.vibe}"`,
       `> Weaving typography: Instrument Serif + Geist`,
       `> Generating repository structure...`,
-      `> Creating custom repo: ${business.customRepo || "webforge-ai"}/sites/${(business.name || "new-site").toLowerCase().replace(/\s+/g, "-")}`,
+      `> Creating custom repo: ${business.customRepo || "webforge-ai"}/sites/${slug}`,
       `> Forging 8 sections, 24 components`,
       `> Optimizing motion choreography (Fable 5)`,
       `> Writing clean Next.js + Tailwind code`,
@@ -92,6 +96,36 @@ export default function ForgePage() {
       } else {
         clearInterval(interval)
         setTimeout(() => {
+          // Create meta and save to vault
+          const meta = createForgeMeta({
+            businessName: business.name || "New Business",
+            tagline: business.tagline || "Woven from words",
+            description: business.description,
+            audience: business.audience,
+            vibe: business.vibe as any,
+            services: business.services.split("\n").filter(Boolean),
+            contact: business.contact,
+            repo: `${business.customRepo}/sites/${slug}`,
+            slug,
+          })
+          saveToVault({ ...meta, status: "forged" })
+
+          // Also try API
+          fetch("/api/forge", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              businessName: business.name,
+              tagline: business.tagline,
+              description: business.description,
+              audience: business.audience,
+              vibe: business.vibe,
+              services: business.services,
+              contact: business.contact,
+              repo: business.customRepo,
+            }),
+          }).catch(() => {})
+
           setGeneratedCode(`// Generated for ${business.name}
 export default function ${business.name.replace(/\s+/g, "") || "Business"}Site() {
   return (
@@ -136,6 +170,17 @@ export default function ${business.name.replace(/\s+/g, "") || "Business"}Site()
                 </p>
               </div>
 
+              <BusinessDropZone
+                onParsed={(d) => {
+                  setBusiness((b) => ({
+                    ...b,
+                    name: d.name || b.name,
+                    description: d.description || b.description,
+                    vibe: d.vibe || b.vibe,
+                  }))
+                }}
+              />
+
               <AnimatePresence mode="wait">
                 {step === "intake" && (
                   <motion.div
@@ -143,7 +188,7 @@ export default function ${business.name.replace(/\s+/g, "") || "Business"}Site()
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
-                    className="rounded-[24px] border border-[#E8E6E1] bg-white p-6 shadow-paper-lg md:p-8"
+                    className="mt-6 rounded-[24px] border border-[#E8E6E1] bg-white p-6 shadow-paper-lg md:p-8"
                   >
                     <div className="space-y-6">
                       <div className="grid grid-cols-2 gap-4">
@@ -329,12 +374,12 @@ export default function ${business.name.replace(/\s+/g, "") || "Business"}Site()
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
-                      <button className="flex items-center justify-center gap-2 rounded-full border border-[#E8E6E1] bg-white py-3 text-[14px] font-medium hover:border-[#141413] transition-colors">
-                        <Save size={16} /> Save to repo
-                      </button>
-                      <button className="flex items-center justify-center gap-2 rounded-full bg-[#141413] py-3 text-[14px] font-medium text-white hover:bg-[#232320] transition-colors">
-                        <ExternalLink size={16} /> Deploy live
-                      </button>
+                      <Link href="/projects" className="flex items-center justify-center gap-2 rounded-full border border-[#E8E6E1] bg-white py-3 text-[14px] font-medium hover:border-[#141413] transition-colors">
+                        <Save size={16} /> View vault
+                      </Link>
+                      <Link href={`/sites/${slugify(business.name || "new-site")}`} className="flex items-center justify-center gap-2 rounded-full bg-[#141413] py-3 text-[14px] font-medium text-white hover:bg-[#232320] transition-colors">
+                        <ExternalLink size={16} /> Open live site
+                      </Link>
                     </div>
                   </motion.div>
                 )}
