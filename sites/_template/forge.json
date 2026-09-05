@@ -1,0 +1,24 @@
+{
+  "id": "forge_template",
+  "slug": "atelier-no-5",
+  "businessName": "Atelier No. 5",
+  "tagline": "Objects made to be lived with",
+  "description": "A quiet ceramic studio in Kyoto, making wabi-sabi tableware for slow mornings. Each piece is thrown by hand, glazed with local ash, and meant to age with you.",
+  "audience": "Designers, collectors, slow-living seekers",
+  "vibe": "wabi-sabi",
+  "services": ["Hand-thrown ceramics", "Wabi-sabi tableware", "Studio visits by appointment", "Wholesale for cafes"],
+  "contact": "Kyoto, JP • hello@atelier5.jp",
+  "repo": "arenaai815-wq/webforge-ai/sites/atelier-no-5",
+  "createdAt": "2025-09-05T00:00:00.000Z",
+  "status": "forged",
+  "palette": {
+    "paper": "#FAF9F5",
+    "ink": "#141413",
+    "accent": "#D97757",
+    "stone": "#E8E6E1"
+  },
+  "typography": {
+    "display": "Instrument Serif",
+    "sans": "Geist"
+  }
+}
