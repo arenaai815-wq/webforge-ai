@@ -36,6 +36,7 @@ export function Navbar() {
           </a>
           <div className="hidden items-center gap-6 pr-4 text-[14px] font-[450] tracking-[-0.01em] text-[#575551] md:flex">
             <Link href="#fable" className="hover:text-[#141413] transition-colors">Manifesto</Link>
+            <Link href="/business" className="hover:text-[#141413] transition-colors">Drop Business</Link>
             <Link href="/forge" className="hover:text-[#141413] transition-colors">Forge</Link>
             <Link href="/projects" className="hover:text-[#141413] transition-colors">Vault</Link>
           </div>
